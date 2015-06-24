@@ -1,0 +1,189 @@
+<html>
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<title>Drawing Test</title>
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+pre, code {
+  font-family: "Menlo", monospace;
+  line-height: normal;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+.axis,.append {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+
+</head>
+<body>
+<h1 style="font-family: 'Montserrat', sans-serif;">2014 - 2008 Season Ranking and Graph</h1>
+
+
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right+28)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("data3.csv", function(error, data) {
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "State"; }));
+
+  data.forEach(function(d) {
+    var y0 = 0;
+    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.total = d.ages[d.ages.length - 1].y1;
+  });
+
+  data.sort(function(a, b) { return b.total - a.total; });
+
+  x.domain(data.map(function(d) { return d.State; }));
+  y.domain([0, d3.max(data, function(d) { return d.total; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Total Wins");
+
+  var state = svg.selectAll(".state")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; });
+
+  state.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .style("fill", function(d) { return color(d.name); });
+
+  var legend = svg.selectAll(".legend")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width + 28)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width + 18)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+});
+
+</script>
+
+<h2>data3.csv</h2>
+<div class="gist-source">
+  <pre><code>State,2014,2013,2012,2011,2010,2009,2008
+ANA,98,78,89,86,80,97,100
+ARI,64,81,81,94,65,70,82
+ATL,79,96,94,89,91,86,72
+BAL,96,85,93,69,66,64,68
+BOS,71,97,69,90,89,95,95
+CHC,73,66,61,71,75,83,97
+CHW,73,63,85,79,88,79,89
+CIN,76,90,97,79,91,78,74
+CLE,85,92,68,80,69,65,81
+COL,66,74,64,73,83,92,74
+DET,90,93,88,95,81,86,74
+FLA,77,62,69,72,80,87,84
+HOU,70,51,55,56,76,74,86
+KCR,89,86,72,71,67,65,75
+LAD,94,92,86,82,80,95,84
+MIL,82,74,83,96,77,80,90
+MIN,70,66,66,63,94,87,88
+NYM,79,74,74,77,79,70,89
+NYY,84,85,95,97,95,103,89
+OAK,88,96,94,74,81,75,75
+PHI,73,73,81,102,97,93,92
+PIT,88,94,79,72,57,62,67
+SDP,77,76,76,71,90,75,63
+SEA,87,71,75,67,61,85,61
+SFG,88,76,94,86,92,88,72
+STL,90,97,88,90,86,91,86
+TBD,77,92,90,91,96,84,97
+TEX,67,91,93,96,90,87,79
+TOR,83,74,73,81,85,75,86
+WSN,96,86,98,80,69,59,59</code></pre>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<link href="/c3-0.4.9/c3.css" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<!-- Load d3.js and c3.js -->
+<script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+<script src="/c3-0.4.9/c3.min.js"></script>
+<style type="text/css">
+body {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+pre, code {
+  font-family: "Menlo", monospace;
+  line-height: normal;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+
+	#chart .c3-line-Average {
+  		stroke-width: 3px;
+	}
+</style>
+<body>
+<h1 style="font-family: 'Montserrat', sans-serif;">Salary Comparison</h1> LAA = most wins 2014</br>SFG = 2014 World Champ 
+<div id="chart" style="width:100%; height:85%"></div>
+<script type="text/javascript">
+	var chart = c3.generate({
+	    bindto: '#chart',
+	    data: {
+	    	x:'x',
+	      url: 'data6.csv'
+	    },
+	    axis: {
+	        y: {
+	            label: 'million'
+	        }
+	    }
+	});
+</script>
+
+<h2>data6.csv</h2>
+<div class="gist-source">
+  <pre><code>x,Average,NewYork Yankees,Los Angeles Angels,San Francisco Giants
+1986,10.2667,18,14,8
+1987,9.1,17,13,7
+1988,10,19,12,12
+1989,12,17,15,14
+1990,14.8,21,22,21
+1991,20.4333,27,33,30
+1992,26.8667,38,35,30
+1993,30.0667,43,29,34
+1994,30.9333,46,25,39
+1995,31.7,49,31,36
+1996,31.9,54,29,36
+1997,37.5667,62,31,35
+1998,42.6,67,41,41
+1999,49.8,87,55,46
+2000,55.5333,92,51,53
+2001,65.3667,112,48,63
+2002,67.4667,126,62,78
+2003,70.9333,153,79,82
+2004,69.0333,184,101,82
+2005,72.9667,208,95,90
+2006,77.3667,195,103,90
+2007,82.5667,189,109,90
+2008,89.5,208,119,76
+2009,88.8333,201,114,82
+2010,90.7,206,105,96
+2011,92.8333,202,139,118
+2012,97.7667,197,154,131
+2013,101.1667,232,124,136
+2014,106.4,198,122,149</code></pre>
+</div>
+</body>

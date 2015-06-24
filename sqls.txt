@@ -1,0 +1,34 @@
+10:
+	select concat(Master.nameFirst,' ', Master.nameLast) as name,franchID,b.yearID,b.BR
+	from Batting b,Master,Teams
+	where b.playerID = Master.playerID 
+		and (b.AB!='0' or b.AB!=null) 
+		and b.yearID >= '1994' 
+		and (b.teamID = Teams.teamID and b.yearID = Teams.yearID)
+	order by name, yearID DESC
+
+	select franchID, name
+	from Batting b,Master,Teams
+	where b.playerID = Master.playerID 
+		and (b.AB!='0' or b.AB!=null) 
+		and b.yearID >= '1994' 
+		and (b.teamID = Teams.teamID and b.yearID = Teams.yearID)
+	group by franchID
+	order by name
+
+12:
+	select concat(Master.nameFirst,' ', Master.nameLast) as name,franchID,s.yearID,salary/1000000 as Millions
+	from Master,Teams, Salaries s
+	where s.playerID = Master.playerID  
+		and s.yearID >= '1994' 
+		and (s.teamID = Teams.teamID and s.yearID = Teams.yearID)
+	order by name, yearID DESC
+
+	select concat(Master.nameFirst,' ', Master.nameLast) as name,franchID,b.yearID,b.BR, salary/1000000 as Salary
+	from Batting b,Master,Teams, Salaries
+	where b.playerID = Master.playerID 
+		and (b.AB!='0' or b.AB!=null) 
+		and b.yearID >= '1994' 
+		and (b.teamID = Teams.teamID and b.yearID = Teams.yearID)
+		and (Salaries.playerID = b.playerID and Salaries.yearID = b.yearID)
+	order by name, yearID DESC

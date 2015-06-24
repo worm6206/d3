@@ -1,0 +1,120 @@
+<link href="/c3-0.4.9/c3.css" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+<!-- Load d3.js and c3.js -->
+<script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+<script src="/c3-0.4.9/c3.min.js"></script>
+<style type="text/css">
+body {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+pre, code {
+  font-family: "Menlo", monospace;
+  line-height: normal;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+	#chart .c3-line-Average {
+  		stroke-width: 3px;
+	}
+</style>
+<body>
+<h1 style="font-family: 'Montserrat', sans-serif;">Country Distribution ~2014</h1>
+<div id="chart" style="width:100%; height:85%"></div>
+<script type="text/javascript">
+var chart = c3.generate({
+    data: {
+        url : 'data8.csv',
+        type: 'pie',
+    	order : 'asc',
+        onclick: function (id) { hide : id },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    pie: {
+        label: {
+            format: function (value, ratio, id) {
+                return id+ "\t" + d3.format('%')(ratio);
+            }
+        }
+    },
+    tooltip: {
+		format: {
+			value: function (value, ratio, id, index) { return value; }
+		}
+	},
+
+    legend: {
+        position: 'right'
+    }
+
+});
+</script>
+<h2>data8.csv</h2>
+<div class="gist-source">
+  <pre><code>Afghanistan,1
+American Samoa,1
+Aruba,5
+At Sea,1
+Australia,28
+Austria,4
+Bahamas,6
+Belgium,1
+Belize,1
+Brazil,2
+CAN,244
+China,1
+Colombia,14
+Cuba,191
+Curacao,14
+Czech Republic,4
+Dominican,619
+Denmark,1
+Finland,1
+France,8
+Germany,45
+Greece,1
+Guam,1
+Honduras,1
+Indonesia,1
+Ireland,50
+Italy,7
+Jamaica,4
+Japan,61
+Lithuania,1
+Mexico,114
+Netherlands,12
+Nicaragua,13
+Norway,3
+Puerto Rico,246
+Panama,53
+Philippines,1
+Poland,5
+Russia,8
+Saudi Arabia,2
+Singapore,1
+Slovakia,1
+South Korea,15
+Spain,4
+Sweden,4
+Switzerland,1
+Taiwan,11
+United Kingdom,48
+USA,16322
+V.I.,11
+Venezuela,321
+Viet Nam,1</code></pre>
+</div>
+</body>

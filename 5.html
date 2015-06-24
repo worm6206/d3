@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style type="text/css">
+body {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+pre, code {
+  font-family: "Menlo", monospace;
+  line-height: normal;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+</style>
+
+<body>
+  <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <!-- I recommend you host this file on your own, since this will change without warning -->
+  <script src="http://datamaps.github.io/scripts/datamaps.all.min.js"></script>
+  <h1 style="font-family: 'Montserrat', sans-serif;">1871 to 2014 US Players Birth States</h1>
+  <div id="container" style="position: relative; width: 95%; height: 680px;"></div>
+<script>
+
+var election = new Datamap({
+  scope: 'usa',
+  element: document.getElementById('container'),
+  geographyConfig: {
+    highlightBorderColor: '#bada55',
+    highlightBorderWidth: 3,
+    popupTemplate: function(geography, data) {
+      return '<div class="hoverinfo"><b>' + geography.properties.name + ' </br> Number of players:\t' +  data.count + '</b></div>'
+    }
+  },
+  
+
+  fills: {
+    '1': '#007A3D',
+    '2': '#008F47',
+    '3': '#00A352',
+    '4': '#00B85C',
+    '5': '#00CC66',
+    '6': '#19D175',
+    '7': '#33D685',
+    '8': '#4DDB94',
+    '9': '#66E0A3',
+    '10': '#80E6B2',
+    '11': '#99EBC2',
+    '12': '#B2F0D1',
+    '13': '#CCF5E0'
+
+
+},
+data:{
+  "AK":{"fillKey": "13","count":11},
+  "AL":{"fillKey": "8","count":321},
+  "AR":{"fillKey": "10","count":152},
+  "AZ":{"fillKey": "11","count":99},
+  "CA":{"fillKey": "1","count":2115},
+  "CO":{"fillKey": "11","count":88},
+  "CT":{"fillKey": "9","count":204},
+  "DE":{"fillKey": "11","count":54},
+  "FL":{"fillKey": "7","count":469},
+  "GA":{"fillKey": "8","count":338},
+  "HI":{"fillKey": "12","count":39},
+  "IA":{"fillKey": "9","count":217},
+  "ID":{"fillKey": "12","count":28},
+  "IL":{"fillKey": "4","count":1051},
+  "IN":{"fillKey": "8","count":368},
+  "KS":{"fillKey": "9","count":210},
+  "KY":{"fillKey": "9","count":278},
+  "LA":{"fillKey": "9","count":245},
+  "MA":{"fillKey": "6","count":660},
+  "MD":{"fillKey": "8","count":310},
+  "ME":{"fillKey": "11","count":78},
+  "MI":{"fillKey": "7","count":430},
+  "MN":{"fillKey": "10","count":163},
+  "MO":{"fillKey": "6","count":601},
+  "MS":{"fillKey": "10","count":198},
+  "MT":{"fillKey": "12","count":24},
+  "NC":{"fillKey": "8","count":394},
+  "ND":{"fillKey": "13","count":16},
+  "NE":{"fillKey": "10","count":112},
+  "NH":{"fillKey": "11","count":53},
+  "NJ":{"fillKey": "7","count":426},
+  "NM":{"fillKey": "12","count":28},
+  "NV":{"fillKey": "12","count":35},
+  "NY":{"fillKey": "3","count":1202},
+  "OH":{"fillKey": "4","count":1030},
+  "OK":{"fillKey": "9","count":254},
+  "OR":{"fillKey": "10","count":125},
+  "PA":{"fillKey": "2","count":1414},
+  "RI":{"fillKey": "11","count":77},
+  "SC":{"fillKey": "10","count":175},
+  "SD":{"fillKey": "12","count":37},
+  "TN":{"fillKey": "9","count":293},
+  "TX":{"fillKey": "5","count":873},
+  "UT":{"fillKey": "12","count":38},
+  "VA":{"fillKey": "9","count":283},
+  "VT":{"fillKey": "12","count":38},
+  "WA":{"fillKey": "9","count":290},
+  "WI":{"fillKey": "9","count":244},
+  "WV":{"fillKey": "10","count":120},
+  "WY":{"fillKey": "13","count":14}
+}
+});
+election.labels();
+
+</script>
+
+<h2>data4</h2>
+<div class="gist-source">
+  <pre><code>data:{
+  "AK":{"fillKey": "13","count":11},
+  "AL":{"fillKey": "8","count":321},
+  "AR":{"fillKey": "10","count":152},
+  "AZ":{"fillKey": "11","count":99},
+  "CA":{"fillKey": "1","count":2115},
+  "CO":{"fillKey": "11","count":88},
+  "CT":{"fillKey": "9","count":204},
+  "DE":{"fillKey": "11","count":54},
+  "FL":{"fillKey": "7","count":469},
+  "GA":{"fillKey": "8","count":338},
+  "HI":{"fillKey": "12","count":39},
+  "IA":{"fillKey": "9","count":217},
+  "ID":{"fillKey": "12","count":28},
+  "IL":{"fillKey": "4","count":1051},
+  "IN":{"fillKey": "8","count":368},
+  "KS":{"fillKey": "9","count":210},
+  "KY":{"fillKey": "9","count":278},
+  "LA":{"fillKey": "9","count":245},
+  "MA":{"fillKey": "6","count":660},
+  "MD":{"fillKey": "8","count":310},
+  "ME":{"fillKey": "11","count":78},
+  "MI":{"fillKey": "7","count":430},
+  "MN":{"fillKey": "10","count":163},
+  "MO":{"fillKey": "6","count":601},
+  "MS":{"fillKey": "10","count":198},
+  "MT":{"fillKey": "12","count":24},
+  "NC":{"fillKey": "8","count":394},
+  "ND":{"fillKey": "13","count":16},
+  "NE":{"fillKey": "10","count":112},
+  "NH":{"fillKey": "11","count":53},
+  "NJ":{"fillKey": "7","count":426},
+  "NM":{"fillKey": "12","count":28},
+  "NV":{"fillKey": "12","count":35},
+  "NY":{"fillKey": "3","count":1202},
+  "OH":{"fillKey": "4","count":1030},
+  "OK":{"fillKey": "9","count":254},
+  "OR":{"fillKey": "10","count":125},
+  "PA":{"fillKey": "2","count":1414},
+  "RI":{"fillKey": "11","count":77},
+  "SC":{"fillKey": "10","count":175},
+  "SD":{"fillKey": "12","count":37},
+  "TN":{"fillKey": "9","count":293},
+  "TX":{"fillKey": "5","count":873},
+  "UT":{"fillKey": "12","count":38},
+  "VA":{"fillKey": "9","count":283},
+  "VT":{"fillKey": "12","count":38},
+  "WA":{"fillKey": "9","count":290},
+  "WI":{"fillKey": "9","count":244},
+  "WV":{"fillKey": "10","count":120},
+  "WY":{"fillKey": "13","count":14}
+}</code></pre>
+</div>
+
+</body>
