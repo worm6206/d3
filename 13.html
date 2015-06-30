@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<style>
+
+
+.gist-source {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+pre, code {
+  font-family: "Menlo", monospace;
+  line-height: normal;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+
+.axis, .ConnLines{
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+  font-family: Verdana, Geneva, sans-serif;
+  position: absolute;
+  font-size: 15pt;
+  width: 250px;
+  height: 50px;
+  pointer-events: none;
+  background-color: white;
+  border: 1px solid;
+  border-color: grey;
+}
+
+.PlayerInfo{
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 15pt;
+}
+
+#LeftGraph{
+  height: (window.innerHeight - 215);
+  width: (window.innerWidth - 100);
+}
+</style>
+<body>
+  <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+  <h1 style="font-family: 'Montserrat', sans-serif;">20 years batting performance (SQL) <font color="red">Jun 30</font></h1>
+  <div class="id">
+    <select id="teamlist">
+      <option value="ALL" > - ALL Teams - </option>
+      <option value="ARI" >"ARI"Arizona Diamondbacks</option>
+      <option value="ATL" >"ATL"Atlanta Braves</option>
+      <option value="BAL" >"BAL"Baltimore Orioles</option>
+      <option value="BOS" >"BOS"Boston Red Sox</option>
+      <option value="CHC" >"CHC"Chicago Cubs</option>
+      <option value="CHW" >"CHW"Chicago White Sox</option>
+      <option value="CIN" >"CIN"incinnati Reds</option>
+      <option value="CLE" >"CLE"Cleveland Indians</option>
+      <option value="COL" >"COL"Colorado Rockies</option>
+      <option value="DET" >"DET"Detroit Tigers</option>
+      <option value="FLA" >"FLA"Florida Marlins</option>
+      <option value="HOU" >"HOU"Houston Astros</option>
+      <option value="KCR" >"KCR"Kansas City Royals</option>
+      <option value="ANA" >"ANA"Los Angeles Angels of Anaheim</option>
+      <option value="LAD" >"LAD"Los Angeles Dodgers</option>
+      <option value="MIL" >"MIL"Milwaukee Brewers</option>
+      <option value="MIN" >"MIN"Minnesota Twins</option>
+      <option value="NYM" >"NYM"New York Mets</option>
+      <option value="NYY" >"NYY"New York Yankees</option>
+      <option value="OAK" >"OAK"Oakland Athletics</option>
+      <option value="PHI" >"PHI"Philadelphia Phillies</option>
+      <option value="PIT" >"PIT"Pittsburgh Pirates</option>
+      <option value="SDP" >"SDP"San Diego Padres</option>
+      <option value="SFG" >"SFG"San Francisco Giants</option>
+      <option value="SEA" >"SEA"Seattle Mariners</option>
+      <option value="STL" >"STL"St. Louis Cardinals</option>
+      <option value="TBD" >"TBD"Tampa Bay Devil Rays</option>
+      <option value="TEX" >"TEX"Texas Rangers</option>
+      <option value="TOR" >"TOR"Toronto Blue Jays</option>
+      <option value="WSN" >"WSN"Washington Nationals</option>
+    </select>
+  </div>
+  <div id="LeftGraph"></div>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>
+  var OnOff = true,SelectedTeam,margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 40
+    },
+    width = (window.innerWidth - 100) ,
+    height = (window.innerHeight - 215);
+
+  /* 
+   * value accessor - returns the value to encode for a given data object.
+   * scale - maps value to a visual display encoding, such as a pixel position.
+   * map function - maps from data value to display value
+   * axis - sets up axis
+   */
+
+
+  // setup x 
+  var xValue = function(d) {
+      return d.year;
+    }, // data -> value
+    xScale = d3.scale.linear().range([0, width-20]), // value -> display
+    xMap = function(d) {
+      return xScale(xValue(d));
+    }, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).ticks(21).tickFormat(d3.format("d"));
+
+  // setup y
+  var yValue = function(d) {
+      return d["BR"];
+    }, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) {
+      return yScale(yValue(d));
+    }, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+  // setup fill color
+  var color = d3.scale.category20b(),
+    color20 = d3.scale.category20();
+
+  // add the graph canvas to the body of the webpage
+  var svg = d3.select("#LeftGraph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // add line layer 
+  var LineLayer = svg.append("g");
+
+  // add the tooltip area to the webpage
+  var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+
+  var file = "ALL.csv";
+  // load data
+  d3.csv("13.php", function(error, data) {
+
+    // change string (from CSV) into number format
+    var ind = 0
+    data.forEach(function(d) {
+      d.index = ind++;
+      d.BR = +d.BR;
+      d.year = +d.year;
+    });
+
+    // don't want dots overlapping axis, so add in buffer to data domain
+    xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)]);
+    yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue) + 1]);
+
+    // x-axis
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .append("text")
+      .attr("class", "label")
+      .attr("x", width + 20)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("year");
+
+    // y-axis
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Batting Runs (BR)");
+
+  d3.selectAll("select").on("change", drawdot);
+
+
+  var timeout = setTimeout(function() {
+    d3.select("option[value=\"NYY\"]").attr("selected", true).each(drawdot);
+  }, 10);
+
+function drawdot(){
+    SelectedTeam = this.value;
+    svg.selectAll("circle.dot").remove()
+    OnOff = true;
+    svg.selectAll(".ConnLines").remove();
+    svg.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("opacity",.8)
+      .style("stroke-width",1)
+      .style("stroke","grey")
+      .style("fill", function(d) {
+        return color(d.year);
+      })
+      // .on("mouseover", function(d) {
+      //   tooltip.transition()
+      //     .duration(0)
+      //     .style("opacity", .9);
+      //   tooltip.html(d.name + " @ " + d.team + "<br/> " + d.year + ", BR: " + d.BR)
+      //     .style("left", (d3.event.pageX - 105) + "px")
+      //     .style("top", (d3.event.pageY - 58) + "px");
+      //   if(OnOff){if(SelectedTeam!="ALL"){FocusName(d.name,SelectedTeam);}else{FocusNameALL(d.name);}}
+      // })
+      // .on("mouseout", function(d) {
+      //   tooltip.transition()
+      //     .duration(0)
+      //     .style("opacity", 0);
+      //   if(OnOff){if(SelectedTeam!="ALL"){UnFocusName(SelectedTeam);}else{UnFocusNameALL();}}
+      // })
+      // .on("click", function(d) {
+      //   if(OnOff){
+      //     OnOff = false;
+      //     IsoName(d.name);
+      //     DrawLines(d.name,SelectedTeam);
+      //   }else{
+      //     OnOff = true;
+      //     svg.selectAll(".ConnLines").remove();
+      //     svg.selectAll(".PlayerInfo").remove();
+      //     svg.selectAll("circle").style("visibility","visible");
+      //     if(SelectedTeam!="ALL"){svg.selectAll("circle").filter(function(d){return d.team != SelectedTeam}).style("visibility","hidden")}
+      //   }
+      // });
+    if(SelectedTeam!="ALL"){svg.selectAll("circle").filter(function(d){return d.team != SelectedTeam}).style("visibility","hidden")};
+};
+
+  function FocusName(name_in,team){
+    svg.selectAll("circle")
+      .filter(function(d){if(d.name == name_in && d.team == team){return d}})
+      .style("opacity",1)
+      .style("fill", "yellow")
+      .style("stroke", "red")
+      .style("stroke-width","3")
+  };
+
+  function FocusNameALL(name_in){
+    svg.selectAll("circle")
+      .filter(function(d){if(d.name == name_in){return d}})
+      .style("opacity",1)
+      .style("fill", "yellow")
+      .style("stroke", "red")
+      .style("stroke-width","3")
+  };
+
+  function UnFocusName(team){
+    svg.selectAll("circle")
+      .filter(function(d){return d.team == team})
+      .style("opacity",.8)
+      .style("stroke-width",1)
+      .style("stroke","grey")
+      .style("fill", function(d) { return color(d.year);})
+  };
+
+  function UnFocusNameALL(){
+    svg.selectAll("circle")
+      .style("opacity",.8)
+      .style("stroke-width",1)
+      .style("stroke","grey")
+      .style("fill", function(d) { return color(d.year);})
+  };
+
+  function IsoName(name_in,d){
+    svg.selectAll(".dot").style("visibility","hidden")
+    svg.selectAll("circle").filter(function(d){return d.name == name_in}).style("visibility","visible")
+    svg.append("text")
+      .attr("class","PlayerInfo")
+      .attr("x",50)
+      .attr("y",50)
+      .text(name_in)
+  };
+
+  //function for data
+  var DrawLines = function(name_in,team) {
+    var z = 0, SelectedIndex = [],sorted=[],temp;
+    for (var i = 0; i < ind; i++) {
+      if (data[i].name == name_in) {
+        SelectedIndex[z] = i;
+        z++;
+      };
+    };
+    for (var i = 0; i < z; i++) {
+      var yy=yMap(data[SelectedIndex[i]]);
+      LineLayer.append("text")
+        .attr("class","ConnLines")
+        .attr("x",xMap(data[SelectedIndex[i]]))
+        .attr("y",yy - 10)
+        .text(data[SelectedIndex[i]].team)
+      if(i+1<z){
+        LineLayer.append("line")
+        .attr("class","ConnLines")
+        .attr("x1", xMap(data[SelectedIndex[i]]))
+        .attr("y1", yMap(data[SelectedIndex[i]]))
+        .attr("x2", xMap(data[SelectedIndex[i+1]]))
+        .attr("y2", yMap(data[SelectedIndex[i+1]]))
+        .attr("stroke", function(d){if(data[SelectedIndex[i]].BR>data[SelectedIndex[i+1]].BR){return "red"}else{return "green"};})
+        .attr("stroke-width", 3)
+        .attr("opacity",.5)
+      }
+      svg.selectAll("circle").filter(function(d){return d.name == name_in})
+        .style("stroke-width","3")
+        .style("stroke", function(d){if(data[SelectedIndex[i]].team!=team){return "blue"};});
+    };
+  };
+  });
+
+</script>
+
+
+
+</body>
+</html>
