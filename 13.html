@@ -61,11 +61,36 @@ pre {
     height: (window.innerHeight - 215);
     width: (window.innerWidth - 100);
 }
+
+.TopRight{
+    position: absolute;
+    top:50px;
+    right: 50px;
+}
+
+dialog{
+  width: 50%;  
+}
+
 </style>
 
 <body>
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-    <h1 style="font-family: 'Montserrat', sans-serif;">20 years batting performance (SQL) <font color="red">Jun 30</font></h1>
+    <h1 style="font-family: 'Montserrat', sans-serif;">20 years batter performance (SQL) <font color="red">Jun 30</font></h1>
+    <dialog>
+        <p>"BR (batter runs) is designed to reflect the offensive contributions of each batter accurately. The formula is weighted so that a league average player does not add or abstract value from his team; the BR for a league average play will be zero. The idea is to compare how much better or worse than average a player is." ─ Adler, Joseph. <i>Baseball hacks</i></p>
+        <button id="close">Close</button>
+    </dialog>
+    <div class="TopRight"><button id="show">Description</button></div>
+    <script type="text/javascript">
+            var dialog = document.querySelector('dialog');
+            document.querySelector('#show').onclick = function() {
+                dialog.show();
+            };
+            document.querySelector('#close').onclick = function() {
+                dialog.close();
+            };
+    </script>
     <div class="id">
         <select id="teamlist">
             <option value="ALL"> - ALL Teams - </option>
@@ -201,7 +226,7 @@ pre {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Batting Runs (BR)");
+            .text("Batter Runs (BR)");
 
         d3.selectAll("select").on("change", drawdot);
 
@@ -375,6 +400,7 @@ pre {
     </script>
     </br>
     <a href="./13.php">Data Source from PHP + MySQL</a>
+
 </body>
 
 </html>
