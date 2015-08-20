@@ -76,7 +76,7 @@ dialog{
 
 <body>
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-    <h1 style="font-family: 'Montserrat', sans-serif;">20 years batter performance (SQL) <font color="red">Jun 30</font></h1>
+    <h1 style="font-family: 'Montserrat', sans-serif;">Dynamic Trending (SQL) <font color="red">Aug 15</font></h1>
     <dialog>
         <p>"BR (batter runs) is designed to reflect the offensive contributions of each batter accurately. The formula is weighted so that a league average player does not add or abstract value from his team; the BR for a league average play will be zero. The idea is to compare how much better or worse than average a player is." ─ Adler, Joseph. <i>Baseball hacks</i></p>
         <button id="close">Close</button>
@@ -125,6 +125,15 @@ dialog{
             <option value="TOR">"TOR"Toronto Blue Jays</option>
             <option value="WSN">"WSN"Washington Nationals</option>
         </select>
+    </div>
+    <div>
+        <form action="">
+            <input type="radio" name="ToComp" value="BR">BR<br>
+            <input type="radio" name="ToComp" value="Hits">Hits<br>
+            <input type="radio" name="ToComp" value="Walk">Walk<br>
+            <input type="radio" name="ToComp" value="Salary">Salary<br>
+            <input type="radio" name="ToComp" value="Age">Age
+        </form>
     </div>
     <div id="LeftGraph"></div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -190,7 +199,9 @@ dialog{
 
     // var file = "ALL.csv";
     // load data
-    d3.csv("14.php?team=BOS", function(error, data) {
+    
+    var DataSource = "14.php?team=BOS";
+    d3.csv(DataSource, function(error, data) {
 
         // change string (from CSV) into number format
         var ind = 0
