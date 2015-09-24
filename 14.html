@@ -76,7 +76,7 @@ dialog{
 
 <body>
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-    <h1 style="font-family: 'Montserrat', sans-serif;">Dynamic Trending (Live SQL) Extremely Buggy<font color="red">Sep 24</font></h1>
+    <h1 style="font-family: 'Montserrat', sans-serif;">Live d3 - SQL (Extremely Buggy) <font color="red">Sep 24</font></h1>
     <dialog>
         <p>"BR (batter runs) is designed to reflect the offensive contributions of each batter accurately. The formula is weighted so that a league average player does not add or abstract value from his team; the BR for a league average play will be zero. The idea is to compare how much better or worse than average a player is." ─ Adler, Joseph. <i>Baseball hacks</i></p>
         <button id="close">Close</button>
@@ -112,7 +112,7 @@ dialog{
             <option value="MIL">"MIL"Milwaukee Brewers</option>
             <option value="MIN">"MIN"Minnesota Twins</option>
             <option value="NYM">"NYM"New York Mets</option>
-            <option value="NYY" selected="yes">"NYY"New York Yankees</option>
+            <option value="NYY">"NYY"New York Yankees</option>
             <option value="OAK">"OAK"Oakland Athletics</option>
             <option value="PHI">"PHI"Philadelphia Phillies</option>
             <option value="PIT">"PIT"Pittsburgh Pirates</option>
@@ -139,6 +139,10 @@ dialog{
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
+
+    var DataSource = "14.php?team=NYY";
+    
+
     var OnOff = true,
         SelectedTeam, margin = {
             top: 20,
@@ -200,11 +204,13 @@ dialog{
     // var file = "ALL.csv";
     // load data
     
-    var DataSource = "14.php?team=" + SelectedTeam;
-    DataSource = "14.php?team=NYY";
+    
 
     function DrawWhole(){
-                        //alert("In draw");
+                        var x = document.getElementById("teamlist").selectedIndex;
+                        //alert(document.getElementsByTagName("option")[x].value);
+                        DataSource = "14.php?team=" + document.getElementsByTagName("option")[x].value;
+                        //alert(x);
                         d3.csv(DataSource, function(error, data) {
                             //svg.selectAll.remove()
                             // change string (from CSV) into number format
@@ -216,7 +222,7 @@ dialog{
                             });
 
                             // don't want dots overlapping axis, so add in buffer to data domain
-                            xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)]);
+                            xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue) + 1]);
                             yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue) + 1]);
 
                             // x-axis
@@ -244,21 +250,22 @@ dialog{
                                 .style("text-anchor", "end")
                                 .text("Batter Runs (BR)");
 
-                            d3.selectAll("select").on("change", drawdot);
+                            //d3.selectAll("select").on("change", drawdot);
 
 
                             // var timeout = setTimeout(function() {
-                            //     d3.select("option[value=\"ALL\"]").attr("selected", true).each(drawdot);
+                            //     d3.select("option[value=\"NYY\"]").attr("selected", true).each(drawdot);
 
                             // }, 10);
 
 
 
                             function drawdot() {
-                                SelectedTeam = this.value;
-                                DataSource = "14.php?team=" + SelectedTeam;
-                                d3.csv();
-                                //alert(DataSource);
+                                //SelectedTeam = this.value;
+                                //DataSource = "14.php?team=" + SelectedTeam;
+                                //d3.csv();
+                                //alert(SelectedTeam);
+
                                 svg.selectAll("circle.dot").remove();
                                 OnOff = true;
                                 svg.selectAll(".ConnLines").remove();
@@ -275,39 +282,39 @@ dialog{
                                     .style("fill", function(d) {
                                         return color(d.year);
                                     })
-                                    // .on("mouseover", function(d) {
-                                    //   tooltip.transition()
-                                    //     .duration(0)
-                                    //     .style("opacity", .9);
-                                    //   tooltip.html(d.name + " @ " + d.team + "<br/> " + d.year + ", BR: " + d.BR)
-                                    //     .style("left", (d3.event.pageX - 105) + "px")
-                                    //     .style("top", (d3.event.pageY - 58) + "px");
-                                    //   if(OnOff){if(SelectedTeam!="ALL"){FocusName(d.name,SelectedTeam);}else{FocusNameALL(d.name);}}
-                                    // })
-                                    // .on("mouseout", function(d) {
-                                    //   tooltip.transition()
-                                    //     .duration(0)
-                                    //     .style("opacity", 0);
-                                    //   if(OnOff){if(SelectedTeam!="ALL"){UnFocusName(SelectedTeam);}else{UnFocusNameALL();}}
-                                    // })
-                                    // .on("click", function(d) {
-                                    //   if(OnOff){
-                                    //     OnOff = false;
-                                    //     IsoName(d.name);
-                                    //     DrawLines(d.name,SelectedTeam);
-                                    //   }else{
-                                    //     OnOff = true;
-                                    //     svg.selectAll(".ConnLines").remove();
-                                    //     svg.selectAll(".PlayerInfo").remove();
-                                    //     svg.selectAll("circle").style("visibility","visible");
-                                    //     if(SelectedTeam!="ALL"){svg.selectAll("circle").filter(function(d){return d.team != SelectedTeam}).style("visibility","hidden")}
-                                    //   }
-                                    // });
-                                // if (SelectedTeam != "ALL") {
-                                //     svg.selectAll("circle").filter(function(d) {
-                                //         return d.team != SelectedTeam
-                                //     }).style("visibility", "hidden")
-                                // };
+                                    .on("mouseover", function(d) {
+                                      tooltip.transition()
+                                        .duration(0)
+                                        .style("opacity", .9);
+                                      tooltip.html(d.name + " @ " + d.team + "<br/> " + d.year + ", BR: " + d.BR)
+                                        .style("left", (d3.event.pageX - 105) + "px")
+                                        .style("top", (d3.event.pageY - 58) + "px");
+                                      if(OnOff){if(SelectedTeam!="ALL"){FocusName(d.name,SelectedTeam);}else{FocusNameALL(d.name);}}
+                                    })
+                                    .on("mouseout", function(d) {
+                                      tooltip.transition()
+                                        .duration(0)
+                                        .style("opacity", 0);
+                                      if(OnOff){if(SelectedTeam!="ALL"){UnFocusName(SelectedTeam);}else{UnFocusNameALL();}}
+                                    })
+                                    .on("click", function(d) {
+                                      if(OnOff){
+                                        OnOff = false;
+                                        IsoName(d.name);
+                                        DrawLines(d.name,SelectedTeam);
+                                      }else{
+                                        OnOff = true;
+                                        svg.selectAll(".ConnLines").remove();
+                                        svg.selectAll(".PlayerInfo").remove();
+                                        svg.selectAll("circle").style("visibility","visible");
+                                        if(SelectedTeam!="ALL"){svg.selectAll("circle").filter(function(d){return d.team != SelectedTeam}).style("visibility","hidden")}
+                                      }
+                                    });
+/*                                if (SelectedTeam != "ALL") {
+                                    svg.selectAll("circle").filter(function(d) {
+                                        return d.team != SelectedTeam
+                                    }).style("visibility", "hidden")
+                                };*/
                             };
                             function FocusName(name_in, team) {
                                 svg.selectAll("circle")
@@ -417,13 +424,15 @@ dialog{
                                         });
                                 };
                             };
+                            drawdot();
                         });
      };
      //alert("draw done");
-     DrawWhole();
-        var timeout = setTimeout(function() {
-        DrawWhole();
-        }, 10);
+     //DrawWhole();
+                            var timeout = setTimeout(function() {
+                                d3.select("option[value=\"NYY\"]").attr("selected", true).each(DrawWhole);
+
+                            }, 10);
     </script>
     </br>
     <a href="./14.php">Data Source from PHP + MySQL</a>

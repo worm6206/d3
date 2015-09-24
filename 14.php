@@ -19,6 +19,8 @@ $myquery = "	select concat(Master.nameFirst,' ', Master.nameLast) as name,franch
 			and franchID = '". htmlspecialchars($_GET["team"]) ."'
 		order by name, yearID DESC";
 
+//$myquery = htmlspecialchars($_GET["sql"]);
+
 // echo $myquery;
 
 $query = mysql_query($myquery);
