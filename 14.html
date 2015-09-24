@@ -202,9 +202,9 @@ dialog{
     
     var DataSource = "14.php?team=" + SelectedTeam;
     DataSource = "14.php?team=NYY";
-    
+
     function DrawWhole(){
-                        alert("In draw");
+                        //alert("In draw");
                         d3.csv(DataSource, function(error, data) {
                             //svg.selectAll.remove()
                             // change string (from CSV) into number format
@@ -419,7 +419,7 @@ dialog{
                             };
                         });
      };
-     alert("draw done");
+     //alert("draw done");
      DrawWhole();
         var timeout = setTimeout(function() {
         DrawWhole();
