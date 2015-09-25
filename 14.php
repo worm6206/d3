@@ -4,6 +4,7 @@
 $host = "127.0.0.1";
 $username = "lahman";
 $password = "lahman";
+// it's localhost only so don't even think about it. >.O
 $database = "lahman";
 
 $server = mysql_connect($host, $username, $password);
