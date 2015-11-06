@@ -59,7 +59,7 @@ var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .call(d3.behavior.zoom().scaleExtent([0, 8]).on("zoom", zoom))
+    .call(d3.behavior.zoom().scaleExtent([0, 20]).on("zoom", zoom))
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -73,7 +73,7 @@ var tooltip = d3.select("body").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-d3.csv("data1.csv", function(error, data) {
+d3.csv("data2.csv", function(error, data) {
   if (error) throw error;
 
   data.forEach(function(d) {
@@ -112,7 +112,7 @@ d3.csv("data1.csv", function(error, data) {
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r",4)
+      .attr("r",3)
       .attr("cx", function(d) { return x(d.x); })
       .attr("cy", function(d) { return y(d.y); })
       .style("fill", function(d) { return color(d.data_name); })
