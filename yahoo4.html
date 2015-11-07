@@ -82,7 +82,7 @@ d3.csv("2", function(error, data) {
   });
 
   x.domain([0,d3.max(data, function(d) { return d.x; })+0.01]).nice();
-  y.domain([-0.1,d3.max(data, function(d) { return d.y; })+0.1]).nice();
+  y.domain([0,0.06]).nice();
   // x.domain(1,100);
   // y.domain(1,100);
 
