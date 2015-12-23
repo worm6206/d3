@@ -7,7 +7,7 @@ $password = "lahman";
 // it's localhost only so don't even think about it. >.O
 $database = "lahman";
 
-$server = mysql_connect($host, $username, $password);
+$server = @mysql_connect($host, $username, $password);
 $connection = mysql_select_db($database, $server);
 
 $myquery = "	select concat(Master.nameFirst,' ', Master.nameLast) as name,franchID,b.yearID,b.BR, salary/1000000 as Salary
