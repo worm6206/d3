@@ -1,100 +1,122 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8">
-<style>
-.gist-source {
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
-    margin: 1em auto 4em auto;
-    position: relative;
-    tab-size: 2;
-    width: 960px;
-}
+<head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+    $(function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 1985,
+      max: 2014,
+      change: function(event, ui){
+        DrawWhole();
+      },
+      values: [ 1994, 2014 ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val( "" + ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+      }
+    });
+    $( "#amount" ).val( "" + $( "#slider-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+    </script>
+    <meta charset="utf-8">
+    <style>
+    .gist-source {
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        margin: 1em auto 4em auto;
+        position: relative;
+        tab-size: 2;
+        width: 960px;
+    }
 
-pre,
-code {
-    font-family: "Menlo", monospace;
-    line-height: normal;
-}
+    pre,
+    code {
+        font-family: "Menlo", monospace;
+        line-height: normal;
+    }
 
-pre {
-    border-left: solid 2px #ccc;
-    padding-left: 18px;
-    margin: 2em 0 2em -20px;
-    width: 960px;
-    overflow-x: auto;
-}
+    pre {
+        border-left: solid 2px #ccc;
+        padding-left: 18px;
+        margin: 2em 0 2em -20px;
+        width: 960px;
+        overflow-x: auto;
+    }
 
-.axis,
-.ConnLines {
-    font: 10px sans-serif;
-}
+    .axis,
+    .ConnLines {
+        font: 10px sans-serif;
+    }
 
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
 
-.dot {
-    stroke: #000;
-}
+    .dot {
+        stroke: #000;
+    }
 
-.tooltip {
-    font-family: Verdana, Geneva, sans-serif;
-    position: absolute;
-    font-size: 15pt;
-    width: 250px;
-    height: 50px;
-    pointer-events: none;
-    background-color: white;
-    border: 1px solid;
-    border-color: grey;
-}
+    .tooltip {
+        font-family: Verdana, Geneva, sans-serif;
+        position: absolute;
+        font-size: 15pt;
+        width: 250px;
+        height: 50px;
+        pointer-events: none;
+        background-color: white;
+        border: 1px solid;
+        border-color: grey;
+    }
 
-.PlayerInfo {
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 15pt;
-}
+    .PlayerInfo {
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 15pt;
+    }
 
-#LeftGraph {
-    height: (window.innerHeight - 215);
-    width: (window.innerWidth - 100);
-}
+    #LeftGraph {
+        height: (window.innerHeight - 215);
+        width: (window.innerWidth - 100);a
+    }
 
-#sqlstring {
-    position: absolute;
-    font: 15px sans-serif;
-    top: 100px;
-    right: 5px;
-    width: 380px;
-    border-radius: 25px;
-    border: 2px solid #8AC007;
-    padding: 20px;
-}
+    #sqlstring {
+        position: absolute;
+        font: 15px sans-serif;
+        top: 100px;
+        right: 5px;
+        width: 380px;
+        border-radius: 25px;
+        border: 2px solid #8AC007;
+        padding: 20px;
+    }
 
-.TopRight{
-    position: absolute;
-    top:50px;
-    right: 50px;
-}
+    .TopRight{
+        position: absolute;
+        top:50px;
+        right: 50px;
+    }
 
-.id{
-    top:50px;
-}
+    #slider-range{
+        width: 600px;
+    }
 
-dialog{
-    font: 15px sans-serif;
-    top:20%;
-    width: 50%;  
-    border:1px solid gray;
-    padding:8px;
-    background:#e1efbb;
-    z-index: 10;
-}
+    dialog{
+        font: 15px sans-serif;
+        top:20%;
+        width: 50%;  
+        border:1px solid gray;
+        padding:8px;
+        background:#e1efbb;
+        z-index: 10;
+    }
 
-</style>
-
+    </style>
+</head>
 <body>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -110,9 +132,8 @@ dialog{
         $( document ).tooltip();
         });
     </script>
-    <div style="float: left;"><h1 style="font-family: 'Montserrat', sans-serif;">Live d3 - SQL (Extremely Buggy) <font color="red">Sep 24</font></h1></div>
-    <div style="float: left;font: 15px sans-serif;border-radius: 5px;border: 2px solid red;padding: 5px;margin-top: 25px;margin-left: 5px;"><a title="D3.js is directly connected to MySQL by using php as datasource. Hover/Click are currently buggy. A weird dot appears on y-axis due to a bug of d3.js. Prints SQL query at the right hand side. Beautified a little bit. Added this changelog function to keep track of progress. Bring the z-axis into graph for drawing different dot size in Salary. Biggest = 33M, smallest = 0.1M">changelog</a></div>
-    <div class="id">
+    <div style="float: left;"><h1 style="font-family: 'Montserrat', sans-serif;">Live d3 - SQL <font color="red">Jan 2, 2016</font></h1></div>
+    <div style="float: left;font: 15px sans-serif;border-radius: 5px;border: 2px solid red;padding: 5px;margin-top: 25px;margin-left: 5px;"><a title="D3.js is directly connected to MySQL with PHP. Hover/Click are currently buggy. D3.js itself is buggy as well. Prints current SQL query at the right hand side. Bring the z-axis into graph for drawing different dot size in Salary. Biggest = 33M, smallest = 0.1M">changelog</a></div>
     <dialog>
         <p>"BR (batter runs) is designed to reflect the offensive contributions of each batter accurately. The formula is weighted so that a league average player does not add or abstract value from his team; the BR for a league average play will be zero. The idea is to compare how much better or worse than average a player is." ─ Adler, Joseph. <i>Baseball hacks</i></p>
         <button id="close">Close</button>
@@ -127,7 +148,7 @@ dialog{
                 dialog.close();
             };
     </script>
-    <div class="id">
+    <br>
         <select id="teamlist" onchange="DrawWhole()" style="margin-top: 60px;margin-left: 250px;">
             <!-- <option value="ALL"> - ALL Teams - </option> -->
             <option value="ARI">"ARI"Arizona Diamondbacks</option>
@@ -161,7 +182,12 @@ dialog{
             <option value="TOR">"TOR"Toronto Blue Jays</option>
             <option value="WSN">"WSN"Washington Nationals</option>
         </select>
-    </div>
+    <p>
+        <label for="amount">Year range:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+
+    <div id="slider-range"></div>
 <!--     <div>
         <form action="">
             <input type="radio" name="ToComp" value="BR">BR<br>
@@ -246,14 +272,15 @@ dialog{
 
     // var file = "ALL.csv";
     // load data
-    
+    var x,slider;
     
 
     function DrawWhole(){
-                        var x = document.getElementById("teamlist").selectedIndex;
+                        slider = $( "#slider-range" ).slider( "option", "values" );
+                        x = document.getElementById("teamlist").selectedIndex;
                         //alert(document.getElementsByTagName("option")[x].value);
-                        DataSource = "14.php?team=" + document.getElementsByTagName("option")[x].value;
-                        document.getElementById("sqlstring").innerHTML = "select</br>concat(Master.nameFirst,' ', Master.nameLast) as name,</br>    franchID,b.yearID,b.BR, salary/1000000 as Salary </br></br>from </br> Batting b,Master,Teams, Salaries </br></br>where</br> b.playerID = Master.playerID </br>    and (b.AB!='0' or b.AB!=null) </br>    and b.yearID >= '1994' </br>    and (b.teamID = Teams.teamID </br>    and b.yearID = Teams.yearID) </br>    and (Salaries.playerID = b.playerID </br>    and Salaries.yearID = b.yearID) </br>    and franchID = '<font color=\"red\">" + document.getElementsByTagName("option")[x].value + "</font>' </br></br>  order by</br>name, yearID DESC";
+                        DataSource = "14.php?team=" + document.getElementsByTagName("option")[x].value +"&from=" + slider[0] + "&to=" + slider[1];
+                        document.getElementById("sqlstring").innerHTML = "select</br>concat(Master.nameFirst,' ', Master.nameLast) as name,</br>    franchID,b.yearID,b.BR, salary/1000000 as Salary </br></br>from </br> Batting b,Master,Teams, Salaries </br></br>where</br> b.playerID = Master.playerID </br>    and (b.AB!='0' or b.AB!=null) </br>    and b.yearID >= '<font color=\"red\"><b>"+ slider[0] +"</b></font>' </br>    and b.yearID <= '<font color=\"red\"><b>"+ slider[1] +"</b></font>' </br>    and (b.teamID = Teams.teamID </br>    and b.yearID = Teams.yearID) </br>    and (Salaries.playerID = b.playerID </br>    and Salaries.yearID = b.yearID) </br>    and franchID = '<font color=\"red\"><b>" + document.getElementsByTagName("option")[x].value + "</b></font>' </br></br>  order by</br>name, yearID DESC";
                         //alert(x);
                         d3.csv(DataSource, function(error, data) {
                             //svg.selectAll.remove()

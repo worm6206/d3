@@ -14,7 +14,8 @@ $myquery = "	select concat(Master.nameFirst,' ', Master.nameLast) as name,franch
 		from Batting b,Master,Teams, Salaries
 		where b.playerID = Master.playerID 
 			and (b.AB!='0' or b.AB!=null) 
-			and b.yearID >= '1994' 
+			and b.yearID >= '". htmlspecialchars($_GET["from"]) ."' 
+			and b.yearID <= '". htmlspecialchars($_GET["to"]) ."' 
 			and (b.teamID = Teams.teamID and b.yearID = Teams.yearID)
 			and (Salaries.playerID = b.playerID and Salaries.yearID = b.yearID)
 			and franchID = '". htmlspecialchars($_GET["team"]) ."'
