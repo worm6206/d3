@@ -282,7 +282,7 @@
                         DataSource = "14.php?team=" + document.getElementsByTagName("option")[x].value +"&from=" + slider[0] + "&to=" + slider[1];
                         document.getElementById("sqlstring").innerHTML = "select</br>concat(Master.nameFirst,' ', Master.nameLast) as name,</br>    franchID,b.yearID,b.BR, salary/1000000 as Salary </br></br>from </br> Batting b,Master,Teams, Salaries </br></br>where</br> b.playerID = Master.playerID </br>    and (b.AB!='0' or b.AB!=null) </br>    and b.yearID >= '<font color=\"red\"><b>"+ slider[0] +"</b></font>' </br>    and b.yearID <= '<font color=\"red\"><b>"+ slider[1] +"</b></font>' </br>    and (b.teamID = Teams.teamID </br>    and b.yearID = Teams.yearID) </br>    and (Salaries.playerID = b.playerID </br>    and Salaries.yearID = b.yearID) </br>    and franchID = '<font color=\"red\"><b>" + document.getElementsByTagName("option")[x].value + "</b></font>' </br></br>  order by</br>name, yearID DESC";
                         //alert(x);
-                        d3.csv("14test.php", function(error, data) {
+                        d3.csv(DataSource, function(error, data) {
                             //svg.selectAll.remove()
                             // change string (from CSV) into number format
                             var ind = 0
