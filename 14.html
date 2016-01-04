@@ -124,7 +124,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
 
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
     <script>
@@ -273,7 +273,7 @@
     // var file = "ALL.csv";
     // load data
     var x,slider;
-    
+    var z = 0, SelectedIndex = [];
 
     function DrawWhole(){
                         slider = $( "#slider-range" ).slider( "option", "values" );
@@ -282,7 +282,7 @@
                         DataSource = "14.php?team=" + document.getElementsByTagName("option")[x].value +"&from=" + slider[0] + "&to=" + slider[1];
                         document.getElementById("sqlstring").innerHTML = "select</br>concat(Master.nameFirst,' ', Master.nameLast) as name,</br>    franchID,b.yearID,b.BR, salary/1000000 as Salary </br></br>from </br> Batting b,Master,Teams, Salaries </br></br>where</br> b.playerID = Master.playerID </br>    and (b.AB!='0' or b.AB!=null) </br>    and b.yearID >= '<font color=\"red\"><b>"+ slider[0] +"</b></font>' </br>    and b.yearID <= '<font color=\"red\"><b>"+ slider[1] +"</b></font>' </br>    and (b.teamID = Teams.teamID </br>    and b.yearID = Teams.yearID) </br>    and (Salaries.playerID = b.playerID </br>    and Salaries.yearID = b.yearID) </br>    and franchID = '<font color=\"red\"><b>" + document.getElementsByTagName("option")[x].value + "</b></font>' </br></br>  order by</br>name, yearID DESC";
                         //alert(x);
-                        d3.csv(DataSource, function(error, data) {
+                        d3.csv("14test.php", function(error, data) {
                             //svg.selectAll.remove()
                             // change string (from CSV) into number format
                             var ind = 0
@@ -321,6 +321,15 @@
                                 .style("text-anchor", "end")
                                 .text("Batter Runs (BR)");
 
+                            // svg.append("line").attr("class", "LLL")
+                            //             .attr("x1", 5)
+                            //             .attr("y1", 5)
+                            //             .attr("x2", 689)
+                            //             .attr("y2", 50)
+                            //             .attr("stroke", function(d) { return "red" })
+                            //             .attr("stroke-width", 3)
+                            //             .attr("opacity", .5);
+
                             //d3.selectAll("select").on("change", drawdot);
 
 
@@ -332,7 +341,7 @@
 
 
                             function drawdot() {
-                                //SelectedTeam = this.value;
+                                SelectedTeam = document.getElementsByTagName("option")[x].value;
                                 //DataSource = "14.php?team=" + SelectedTeam;
                                 //d3.csv();
                                 //alert(SelectedTeam);
@@ -348,7 +357,7 @@
                                     .attr("cx", xMap)
                                     .attr("cy", yMap)
                                     .style("opacity", .7)
-                                    .style("stroke-width", 2)
+                                    .style("stroke-width", 1)
                                     .style("stroke", "#222")
                                     .style("fill", function(d) {
                                         return color(d.year);
@@ -398,6 +407,7 @@
                                     .style("fill", "yellow")
                                     .style("stroke", "red")
                                     .style("stroke-width", "3")
+                                    .sort(function(){return 1})
                             };
 
                             function FocusNameALL(name_in) {
@@ -450,10 +460,7 @@
 
                             //function for data
                             var DrawLines = function(name_in, team) {
-                                var z = 0,
-                                    SelectedIndex = [],
-                                    sorted = [],
-                                    temp;
+                                z=0;
                                 for (var i = 0; i < ind; i++) {
                                     if (data[i].name == name_in) {
                                         SelectedIndex[z] = i;
@@ -461,28 +468,25 @@
                                     };
                                 };
                                 for (var i = 0; i < z; i++) {
+                                    // alert(yy);
                                     var yy = yMap(data[SelectedIndex[i]]);
-                                    LineLayer.append("text")
+                                    svg.append("text")
                                         .attr("class", "ConnLines")
                                         .attr("x", xMap(data[SelectedIndex[i]]))
                                         .attr("y", yy - 10)
                                         .text(data[SelectedIndex[i]].team)
                                     if (i + 1 < z) {
-                                        LineLayer.append("line")
+                                        // alert( xMap(data[SelectedIndex[i]]) );
+                                        svg.append("line")
                                             .attr("class", "ConnLines")
                                             .attr("x1", xMap(data[SelectedIndex[i]]))
                                             .attr("y1", yMap(data[SelectedIndex[i]]))
                                             .attr("x2", xMap(data[SelectedIndex[i + 1]]))
                                             .attr("y2", yMap(data[SelectedIndex[i + 1]]))
-                                            .attr("stroke", function(d) {
-                                                if (data[SelectedIndex[i]].BR > data[SelectedIndex[i + 1]].BR) {
-                                                    return "red"
-                                                } else {
-                                                    return "green"
-                                                };
-                                            })
+                                            .attr("stroke", function(d){if(data[SelectedIndex[i]].BR>data[SelectedIndex[i+1]].BR){return "red"}else{return "green"};})
                                             .attr("stroke-width", 3)
                                             .attr("opacity", .5)
+                                            .sort(function(){return -1});
                                     }
                                     svg.selectAll("circle").filter(function(d) {
                                             return d.name == name_in

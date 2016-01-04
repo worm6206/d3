@@ -37,7 +37,7 @@ $data = array();
 for ($x = 0; $x < mysql_num_rows($query); $x++) {
     $data[] = mysql_fetch_assoc($query);
 }
-echo '<pre>';
+// echo '<pre>';
 echo "name,team,year,BR,Salary\n"; 
 
 //print_r($data);
@@ -46,7 +46,7 @@ foreach ($data as $result) {
 	echo $result['name'],",",$result['franchID'],",",$result['yearID'],",",$result['BR'],",",$result['Salary'],"\n";
 }
 
-echo '</pre>';
+// echo '</pre>';
  
 mysql_close($server);
 ?>
